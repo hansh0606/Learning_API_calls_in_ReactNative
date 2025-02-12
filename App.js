@@ -1,6 +1,6 @@
-import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, ScrollView, Image} from 'react-native';
-import LinearGradient from 'react-native-linear-gradient'; // Import LinearGradient
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
+import LinearGradient from 'react-native-linear-gradient';
 
 const App = () => {
   const [data, setData] = useState({});
@@ -10,9 +10,7 @@ const App = () => {
     const fetchData = async () => {
       setError(null);
       try {
-        const response = await fetch(
-          'https://mocki.io/v1/021cbcca-b77b-4cf3-bde4-d6f41508fde4',
-        );
+        const response = await fetch('https://mocki.io/v1/021cbcca-b77b-4cf3-bde4-d6f41508fde4');
         if (!response.ok) {
           throw new Error('Failed to fetch data');
         }
@@ -22,29 +20,26 @@ const App = () => {
         setError(err.message);
       }
     };
-
     fetchData();
   }, []);
 
-  function displayImage(user) {
-    const items = data[user];
+  function renderImages(items) {
     if (!items || items.length === 0) return null;
 
-    return (
-      <View style={styles.grid}>
-        {items.map((item, index) => (
-          <View key={index} style={styles.imageWrapper}>
-            <Image source={{uri: item.url}} style={styles.image} />
-            {/* Linear Gradient Overlay */}
-            <LinearGradient
-              colors={["rgba(0, 0, 0, 0.0)", "rgba(0, 0, 0, 1.0)"]}
-              style={styles.overlay}>
-              <Text style={styles.overlayText}>{item.title}</Text>
-            </LinearGradient>
-          </View>
-        ))}
-      </View>
-    );
+    return items.map((item, index) => {
+      let imageStyle = styles.image;
+      if (items.length % 2 !== 0 && index === 0) {
+        imageStyle = styles.fullWidthImage;
+      }
+      return (
+        <View key={index} style={[styles.imageWrapper, imageStyle === styles.fullWidthImage ? styles.fullWidthWrapper : null]}>
+          <Image source={{ uri: item.url }} style={imageStyle} />
+          <LinearGradient colors={["rgba(0, 0, 0, 0.0)", "rgba(0, 0, 0, 1.0)"]} style={styles.overlay}>
+            <Text style={styles.overlayText}>{item.title}</Text>
+          </LinearGradient>
+        </View>
+      );
+    });
   }
 
   return (
@@ -54,7 +49,7 @@ const App = () => {
         {Object.keys(data).map(user => (
           <View key={user}>
             <Text style={styles.headerText}>{user}</Text>
-            {displayImage(user)}
+            <View style={styles.grid}>{renderImages(data[user])}</View>
           </View>
         ))}
       </ScrollView>
@@ -67,7 +62,6 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 30,
     paddingHorizontal: 10,
-    
   },
   grid: {
     flexDirection: 'row',
@@ -80,9 +74,17 @@ const styles = StyleSheet.create({
     width: '48%',
     marginBottom: 10,
   },
+  fullWidthWrapper: {
+    width: '100%',
+  },
   image: {
     width: '100%',
     height: 150,
+    borderRadius: 8,
+  },
+  fullWidthImage: {
+    width: '100%',
+    height: 180,
     borderRadius: 8,
   },
   overlay: {
@@ -90,7 +92,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: 50, // Adjust overlay height
+    height: 50,
     justifyContent: 'center',
     alignItems: 'center',
     borderBottomLeftRadius: 8,
