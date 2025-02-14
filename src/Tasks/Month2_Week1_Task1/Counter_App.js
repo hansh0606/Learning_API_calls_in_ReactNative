@@ -12,7 +12,7 @@ export default function Counter_App() {
     const dec =()=>{
         if(count<=0)
         {
-            alert("Can't be less or equal  0!")
+            Alert.alert("Can't be less then 0!")
             return 0;
         }
         return (count-1);
@@ -26,9 +26,9 @@ export default function Counter_App() {
    
   return (
     <>
-    <Text>
+    <Text style={styles.text}>
         {count}
-    </Text>
+    </Text >
       <View style={styles.button}>
         <Button title="Increment" style={styles.button} onPress={()=>setCount(inc())}></Button>
       </View>
@@ -49,4 +49,14 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 10,
   },
+
+  text: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    padding: 3,  
+    margin: 40,   
+    borderColor: 'black',
+    borderWidth: 1,  
+  }
 });
